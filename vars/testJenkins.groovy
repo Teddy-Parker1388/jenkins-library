@@ -1,5 +1,5 @@
 
-def myname(){
+def call(){
  sh "echo Hello World"
 
 
