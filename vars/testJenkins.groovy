@@ -27,11 +27,11 @@ def tacSync() {
 
 def commitPush(){
     withCredentials([usernamePassword(credentialsId: 'github-cred', passwordVariable: 'pass', usernameVariable: 'user')]) {
-        sh  '''
-            git config --global user.name "${user}"
-            git config --global user.password "${pass}"
+        sh  """
+            git config --global user.name ${user}
+            git config --global user.password ${pass}
             git diff --quiet && git diff --staged --quiet || git commit -am 'Update various files'
-           '''
+           """
         sh "git push origin ${env.BRANCH_NAME}"
        
     }
