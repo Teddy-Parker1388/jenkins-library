@@ -31,6 +31,7 @@ def commitPush(){
             git config --global user.name ${user}
             git config --global user.password ${pass}
             git diff --quiet && git diff --staged --quiet || git commit -am 'Update various files'
+            git config -l
            """
         sh "git push origin ${env.BRANCH_NAME}"
        
