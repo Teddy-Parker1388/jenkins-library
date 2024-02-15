@@ -1,6 +1,4 @@
 
-def environments = /^(dev|prod|qa|stage|perf).*/
-
 def call(){
     def environments = /^(dev|prod|qa|stage|perf).*/
 
@@ -11,7 +9,7 @@ def call(){
         }
         stage("COMMIT CHANGES"){
             echo "Commit any changes. Push to remote"
-            gitCommit()
+            commitPush()
         }
         stage("TAC VALIDATE"){
             echo "Running `tsunami tac validate`"
