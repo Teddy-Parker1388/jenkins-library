@@ -1,9 +1,7 @@
 
 def call(){
     def environments = /^(dev|prod|qa|stage|perf).*/
-       stage("INITIALIZE"){
-checkout scm
-       }
+   
     if (env.BRANCH_NAME ==~ environments){
         stage("TAC SYNC"){
             echo "Running `tsunami tac sync`"
