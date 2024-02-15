@@ -1,7 +1,7 @@
 
 def call(){
  sh "echo Hello World"
- sh 'echo ${env.BRANCHNAME}'
+ sh 'echo ${env.BRANCH_NAME}'
 
 
 
