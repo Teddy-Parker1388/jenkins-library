@@ -28,7 +28,7 @@ def tacSync() {
 def commitPush(){
     sh """  
     git diff --quiet && git diff --staged --quiet || git commit -am 'Update various files'
-    git push origin ${env.BRANCHNAME}
+    git push origin ${env.BRANCH_NAME}
     """
 }
 
