@@ -22,6 +22,7 @@ def call(){
 
 
 def tacSync() {
+    sh "ls -l"
     sh "tsunami tac sync"
 }
 
