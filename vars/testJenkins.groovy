@@ -22,13 +22,7 @@ def call(){
 
 
 def tacSync() {
-    checkout([
-         $class: 'GitSCM',
-         branches: scm.branches,
-         doGenerateSubmoduleConfigurations: scm.doGenerateSubmoduleConfigurations,
-         extensions: scm.extensions,
-         userRemoteConfigs: scm.userRemoteConfigs
-    ])
+    
     sh "ls -l"
     sh "git branch"
     sh "tsunami tac sync -e${env.BRANCH_NAME}"
