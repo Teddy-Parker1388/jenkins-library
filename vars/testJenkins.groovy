@@ -23,7 +23,7 @@ def call(){
 
 def tacSync() {
     
-    sh "ls -l"
+    sh "python3 -m pip list"
     sh "git branch"
     sh "tsunami tac sync -e ${env.BRANCH_NAME}"
 }
