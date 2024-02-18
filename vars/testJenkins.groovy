@@ -25,7 +25,14 @@ def tacSync() {
     
     sh "python3 -m pip list"
     sh "git branch"
-    sh "git checkout ${env.BRANCH_NAME}"
+    //sh "git checkout ${env.BRANCH_NAME}"
+    checkout([
+         $class: 'GitSCM',
+         branches: scm.branches,
+         doGenerateSubmoduleConfigurations: scm.doGenerateSubmoduleConfigurations,
+         extensions: scm.extensions,
+         userRemoteConfigs: scm.userRemoteConfigs
+    ])
     sh "tsunami tac sync "
 }
 
