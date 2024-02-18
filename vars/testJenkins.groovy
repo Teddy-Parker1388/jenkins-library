@@ -25,7 +25,7 @@ def tacSync() {
     
     sh "python3 -m pip list"
     sh "git branch"
-    sh "git checkout ${env.BRANCH_NAME}"
+//    sh "git checkout ${env.BRANCH_NAME}"
     
     sh "tsunami tac sync "
 }
