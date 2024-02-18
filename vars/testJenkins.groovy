@@ -23,6 +23,7 @@ def call(){
 
 def tacSync() {
     sh "ls -l"
+    sh "git branch"
     sh "tsunami tac sync"
 }
 
