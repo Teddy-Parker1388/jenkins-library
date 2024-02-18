@@ -25,7 +25,7 @@ def tacSync() {
     
     sh "ls -l"
     sh "git branch"
-    sh "tsunami tac sync -e${env.BRANCH_NAME}"
+    sh "tsunami tac sync -e ${env.BRANCH_NAME}"
 }
 
 def commitPush(){
