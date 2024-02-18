@@ -34,8 +34,8 @@ def tacSync() {
 def commitPush(){
     withCredentials([usernamePassword(credentialsId: 'github-cred', passwordVariable: 'pass', usernameVariable: 'user')]) {
         sh  """
-            git config --global user.name Teddy-Parker1388
-            git config --global user.email pteddy17@gmail.com
+            git config --local user.name Teddy-Parker1388
+            git config --local user.email pteddy17@gmail.com
             git diff --quiet && git diff --staged --quiet || git commit -am 'Update various files'
             git config -l
             ls -l
