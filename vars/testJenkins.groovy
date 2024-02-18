@@ -25,7 +25,7 @@ def tacSync() {
     
     sh "python3 -m pip list"
     sh "git branch"
-    sh "tsunami tac sync -e ${env.BRANCH_NAME}"
+    sh "tsunami tac sync -e stage"
 }
 
 def commitPush(){
