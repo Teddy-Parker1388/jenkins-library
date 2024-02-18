@@ -25,6 +25,7 @@ def tacSync() {
     
     sh "python3 -m pip list"
     sh "git branch"
+    sh "git checkout stage"
     sh "tsunami tac sync -e stage"
 }
 
