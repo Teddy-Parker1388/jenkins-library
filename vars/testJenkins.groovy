@@ -39,7 +39,7 @@ def tacSyncCommit(String ssh_credentials_id,String branch,environments) {
     if (branch =~ environments) {
         echo "Running `tsunami tac sync`..."
         sh "tsunami tac sync -e ${branch}"
-        sh "echo 'HEY LOVELIES' >> coding.yaml"
+        sh "echo 'HEY LOVELIES' >> coding.yamls"
         def changes = sh(script: 'git status --short', returnStdout: true).trim()
 
         if (changes) {
