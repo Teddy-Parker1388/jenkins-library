@@ -1,51 +1,60 @@
+def call(config){
+ String git_user = config?.git?.user ?: "Teddy-Parker1388"
+ String git_email = config?.git?.email ?: "pteddy17@gmail.com"
+ String ssh_credentials_id = config?.git?.credentials ?: "github-ssh"
+  stage("Checkout"){
+      repoCheckout()
+  }
+  stage("TAC Sync"){
+      tacSyncCommit()
+  }
+  stage("TAC Validate"){
+      tacValidate()
+  }
 
-def call(){
+}
+
+def branch = env.BRANCH_NAME
+
+def repoCheckout(String git_user , String git_email){
+    checkout([
+        $class: 'GitSCM',
+        branches: scm.branches,
+        extensions: scm.extensions,
+        userRemoteConfigs: scm.userRemoteConfigs
+    ])
+    sh """
+        git checkout ${branch}
+        git config user.name ${git_user}
+        git config user.email ${git_email}
+         """
+
+}
+
+def tacSyncCommit(String ssh_credentials_id) {
     def environments = /^(dev|prod|qa|stage|perf).*/
-   
-    if (env.BRANCH_NAME ==~ environments){
-        stage("TAC SYNC"){
-            echo "Running `tsunami tac sync`"
-            tacSync()
-        }
-        stage("COMMIT CHANGES"){
-            echo "Commit any changes. Push to remote"
-            commitPush()
-        }
-        stage("TAC VALIDATE"){
-            echo "Running `tsunami tac validate`"
-            tacValidate()
+    
+    if (branch =~ environments) {
+        echo "Running `tsunami tac sync`..."
+        sh "tsunami tac sync -e ${branch}"
+        def changes = sh(script: 'git status --short', returnStdout: true).trim()
 
+        if (changes) {
+        // Commit any changes
+        sshagent([ssh_credentials_id]){
+            sh """
+            git add .
+            git commit -m 'Changes made after running TAC Sync'
+            git push origin ${branch}
+            """
+        }
+         }else{
+            echo "There are no changes to commit"
         }
     }
-
-}
-
-
-def tacSync() {
-    
-    sh "python3 -m pip list"
-    sh "git branch"
-    
-   sh "git checkout ${env.BRANCH_NAME}"
-    
-    sh "tsunami tac sync "
-}
-
-def commitPush(){
-    withCredentials([usernamePassword(credentialsId: 'github-cred', passwordVariable: 'pass', usernameVariable: 'user')]) {
-        sh  """
-            git config --local user.name Teddy-Parker1388
-            git config --local user.email pteddy17@gmail.com
-            git diff --quiet && git diff --staged --quiet || git commit -am 'Update various files'
-            git config -l
-            ls -l
-           """
-        sh "git push origin ${env.BRANCH_NAME}"
-       
-    }
-    
 }
 
 def tacValidate() {
+    echo "Running `tsunami tac validate`..."
     sh "tsunami tac validate"
 }
