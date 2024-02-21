@@ -3,10 +3,10 @@ def call(Map config){
  String git_email = config?.git?.email ?: "pteddy17@gmail.com"
  String ssh_credentials_id = config?.git?.credentials ?: "github-ssh"
   stage("Checkout"){
-      repoCheckout()
+      repoCheckout(git_user,git_email)
   }
   stage("TAC Sync"){
-      tacSyncCommit()
+      tacSyncCommit(ssh_credentials_id)
   }
   stage("TAC Validate"){
       tacValidate()
