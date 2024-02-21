@@ -14,7 +14,7 @@ def call(Map config){
 
 }
 
-String branch = env.BRANCH_NAME
+def branch = env.BRANCH_NAME
 def environments = /^(dev|prod|qa|stage|perf).*/
 
 def repoCheckout(String git_user , String git_email){
