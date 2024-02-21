@@ -1,4 +1,4 @@
-def call(config){
+def call(Map config){
  String git_user = config?.git?.user ?: "Teddy-Parker1388"
  String git_email = config?.git?.email ?: "pteddy17@gmail.com"
  String ssh_credentials_id = config?.git?.credentials ?: "github-ssh"
