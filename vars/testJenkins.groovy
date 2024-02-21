@@ -14,7 +14,8 @@ def call(config){
 
 }
 
-def branch = env.BRANCH_NAME
+String branch = env.BRANCH_NAME
+def environments = /^(dev|prod|qa|stage|perf).*/
 
 def repoCheckout(String git_user , String git_email){
     checkout([
@@ -32,7 +33,6 @@ def repoCheckout(String git_user , String git_email){
 }
 
 def tacSyncCommit(String ssh_credentials_id) {
-    def environments = /^(dev|prod|qa|stage|perf).*/
     
     if (branch =~ environments) {
         echo "Running `tsunami tac sync`..."
