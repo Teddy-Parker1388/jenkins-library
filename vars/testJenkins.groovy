@@ -2,11 +2,15 @@ def call(Map config){
  String git_user = config?.git?.user ?: "Teddy-Parker1388"
  String git_email = config?.git?.email ?: "pteddy17@gmail.com"
  String ssh_credentials_id = config?.git?.credentials ?: "github-ssh"
+
+def branch = env.BRANCH_NAME
+def environments = /^(dev|prod|qa|stage|perf).*/
+
   stage("Checkout"){
-      repoCheckout(git_user,git_email)
+      repoCheckout(git_user,git_email,branch)
   }
   stage("TAC Sync"){
-      tacSyncCommit(ssh_credentials_id)
+      tacSyncCommit(ssh_credentials_id,branch,environments)
   }
   stage("TAC Validate"){
       tacValidate()
@@ -14,10 +18,8 @@ def call(Map config){
 
 }
 
-def branch = env.BRANCH_NAME
-def environments = /^(dev|prod|qa|stage|perf).*/
 
-def repoCheckout(String git_user , String git_email){
+def repoCheckout(String git_user , String git_email,String branch){
     checkout([
         $class: 'GitSCM',
         branches: scm.branches,
@@ -32,7 +34,7 @@ def repoCheckout(String git_user , String git_email){
 
 }
 
-def tacSyncCommit(String ssh_credentials_id) {
+def tacSyncCommit(String ssh_credentials_id,String branch,environments) {
     
     if (branch =~ environments) {
         echo "Running `tsunami tac sync`..."
