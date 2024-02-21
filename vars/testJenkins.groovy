@@ -49,7 +49,7 @@ def tacSyncCommit(String ssh_credentials_id,String branch,environments) {
             
             git add .
             git commit -m 'Changes made after running TAC Sync'
-            git push origin ${branch}
+            git push -f origin ${branch}
             """
         }
          }else{
