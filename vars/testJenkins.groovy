@@ -1,12 +1,13 @@
 
 def call(Closure body ){
     Map config = parseConfig(body)
+    
 
     String ssh_credentials =  "github-ssh"
     String branch = env.BRANCH_NAME
     def environments = /^(dev|prod|qa|stage|perf).*/
 
- node(config.agent ?: 'centos-python') {
+ node(config.agent ?: 'myjenkins') {
      try{
          stage("Repo Checkout"){
       repoCheckout()
