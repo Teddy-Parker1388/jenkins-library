@@ -1,64 +1,82 @@
-def call(Map config){
- String git_user = config?.git?.user ?: "Teddy-Parker1388"
- String git_email = config?.git?.email ?: "pteddy17@gmail.com"
- String ssh_credentials_id = config?.git?.credentials ?: "github-ssh"
 
-def branch = env.BRANCH_NAME
-def environments = /^(dev|prod|qa|stage|perf).*/
+def call(Closure body ){
+    Map config = parseConfig(body)
 
-  stage("Checkout"){
-      repoCheckout(git_user,git_email,branch)
-  }
-  stage("TAC Sync"){
-      tacSyncCommit(ssh_credentials_id,branch,environments)
-  }
-  stage("TAC Validate"){
+    String ssh_credentials =  "github-ssh"
+    String branch = env.BRANCH_NAME
+    def environments = /^(dev|prod|qa|stage|perf).*/
+
+ node(config.agent ?: 'centos-python') {
+     try{
+         stage("Repo Checkout"){
+      repoCheckout()
+    }
+   
+
+    if(branch =~ environments){
+        stage("TAC Sync"){
+      tacSync()
+        }
+      stage("Commit Changes"){
+          commitChanges(ssh_credentials,branch)
+      }
+    }
+  
+    stage("TAC Validate"){
       tacValidate()
-  }
+    }
 
+     }catch (Exception error){
+         throw(error)
+     }finally{
+         cleanWs()
+     }
+     
+
+
+ }
+    
 }
 
 
-def repoCheckout(String git_user , String git_email,String branch){
+def repoCheckout(){
     checkout([
         $class: 'GitSCM',
         branches: scm.branches,
-        extensions: scm.extensions,
-        userRemoteConfigs: scm.userRemoteConfigs
+        extensions: scm.extensions + builtExtensions,
+        userRemoteConfigs: userRemoteConfigs
     ])
-    sh """
-        git checkout ${branch}
-        git config user.name ${git_user}
-        git config user.email ${git_email}
-         """
+
+ sh "git config --local user.name  Teddy-Parker1388"
+ sh "git config --local user.email pteddy17@gmail.com"
 
 }
 
-def tacSyncCommit(String ssh_credentials_id,String branch,environments) {
-    
-    if (branch =~ environments) {
+def tacSync() {
         echo "Running `tsunami tac sync`..."
-        sh "tsunami tac sync -e ${branch}"
-        sh "echo 'HEY LOVELIES' >> coding.yamls"
-        def changes = sh(script: 'git status --short', returnStdout: true).trim()
+//        sh "tsunami tac sync"
+    
+}
 
-        if (changes) {
+def commitChanges(ssh_credentials,branch){
+    def changes = sh(script: 'git status --short', returnStdout: true).trim()
+
+    if (changes) {
         // Commit any changes
-        sshagent([ssh_credentials_id]){
+        sshagent([ssh_credentials]){
             sh """
-            
             git add .
-            git commit -m 'Changes made after running TAC Sync'
-            git push -f origin ${branch}
+            git commit -m 'tsunami tac sync updates'
+            git push origin ${branch}
             """
         }
          }else{
-            echo "There are no changes to commit"
+            echo "There are no changes to commit."
         }
-    }
+
 }
 
 def tacValidate() {
     echo "Running `tsunami tac validate`..."
-    sh "tsunami tac validate"
+//    sh "tsunami tac validate"
 }
